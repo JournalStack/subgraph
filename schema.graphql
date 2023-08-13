@@ -1,5 +1,5 @@
 type PostCreated @entity(immutable: true) {
-  id: Bytes!
+  id: String!
   SocialMedia_id: BigInt! # uint256
   content: String! # string
   owner: Bytes! # address
@@ -10,7 +10,7 @@ type PostCreated @entity(immutable: true) {
 }
 
 type PostLiked @entity(immutable: true) {
-  id: Bytes!
+  id: String!
   postId: BigInt! # uint256
   postOwner: Bytes! # address
   likeGiver: Bytes! # address

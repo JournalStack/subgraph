@@ -1,3 +1,4 @@
+import { BigInt, bigInt } from "@graphprotocol/graph-ts";
 import {
   PostCreated as PostCreatedEvent,
   PostLiked as PostLikedEvent,
@@ -5,9 +6,7 @@ import {
 import { PostCreated, PostLiked } from "../generated/schema";
 
 export function handlePostCreated(event: PostCreatedEvent): void {
-  let entity = new PostCreated(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
-  );
+  let entity = new PostCreated(event.params.id.toString());
   entity.SocialMedia_id = event.params.id;
   entity.content = event.params.content;
   entity.owner = event.params.owner;
@@ -22,7 +21,8 @@ export function handlePostCreated(event: PostCreatedEvent): void {
 
 export function handlePostLiked(event: PostLikedEvent): void {
   let entity = new PostLiked(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
+    event.params.postId.toString()
+    // event.transaction.hash.concatI32(event.logIndex.toI32())
   );
   entity.postId = event.params.postId;
   entity.postOwner = event.params.postOwner;
@@ -33,4 +33,11 @@ export function handlePostLiked(event: PostLikedEvent): void {
   entity.transactionHash = event.transaction.hash;
 
   entity.save();
+  let post = PostCreated.load(event.params.postId.toString());
+  if (post) {
+    const one = new BigInt(1);
+    const likes = post.likes;
+    post.likes = likes.plus(one);
+    post.save();
+  }
 }
