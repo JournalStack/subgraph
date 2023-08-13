@@ -1,0 +1,27 @@
+specVersion: 0.0.5
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum
+    name: SocialMedia
+    network: optimism-goerli
+    source:
+      address: "0xf1dc759fff77ef4a8381f27aa32c435713b18ca9"
+      abi: SocialMedia
+      startBlock: 13212537
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - PostCreated
+        - PostLiked
+      abis:
+        - name: SocialMedia
+          file: ./abis/SocialMedia.json
+      eventHandlers:
+        - event: PostCreated(uint256,string,address,uint256)
+          handler: handlePostCreated
+        - event: PostLiked(uint256,address,address)
+          handler: handlePostLiked
+      file: ./src/social-media.ts
